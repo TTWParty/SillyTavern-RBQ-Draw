@@ -1,0 +1,11 @@
+{
+  "display_name": "RBQ生图扩展",
+  "loading_order": 55,
+  "requires": [],
+  "optional": [],
+  "js": "index.js",
+  "css": "style.css",
+  "author": "Codex",
+  "version": "0.1.3",
+  "description": "从聊天中提取提示词，并调用 ComfyUI、NAI 或其他渠道进行生图。"
+}
