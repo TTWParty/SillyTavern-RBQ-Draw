@@ -6,7 +6,7 @@
   "js": "index.js",
   "css": "style.css",
   "author": "TTWParty",
-  "version": "0.3.15",
+  "version": "0.3.16",
   "homePage": "https://github.com/TTWParty/SillyTavern-RBQ-Draw",
   "auto_update": true,
   "description": "从聊天中提取提示词，并调用 ComfyUI、NAI 或其他渠道进行生图。"
