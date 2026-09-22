@@ -2511,49 +2511,6 @@ function parseComfyWorkflowJson(raw) {
     return data;
 }
 
-function sanitizeComfyWeiLinNode(node, fallbackPrompt) {
-    if (!node || !node.inputs) return;
-    const cType = String(node.class_type || '');
-    if (!/WeiLin/i.test(cType) && !/PromptUI/i.test(cType)) return;
-
-    if (node.inputs.auto_random !== undefined) {
-        node.inputs.auto_random = false;
-    }
-
-    if (node.inputs.positive !== undefined) {
-        const val = node.inputs.positive;
-        let promptText = fallbackPrompt;
-        let existingLora = null;
-
-        if (typeof val === 'string') {
-            const trimmed = val.trim();
-            if (trimmed.startsWith('{')) {
-                try {
-                    const parsed = JSON.parse(trimmed);
-                    if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
-                        if (parsed.prompt !== undefined && parsed.prompt !== null) {
-                            promptText = String(parsed.prompt);
-                        }
-                        if (parsed.lora !== undefined) {
-                            existingLora = parsed.lora;
-                        }
-                    }
-                } catch (_) {}
-            } else if (trimmed && trimmed !== '正面提示词' && trimmed !== '{{prompt}}' && trimmed !== '{{positive}}' && trimmed !== '{{positive_prompt}}') {
-                promptText = trimmed;
-            }
-        } else if (val !== null && val !== undefined) {
-            promptText = String(val);
-        }
-
-        const obj = { prompt: promptText !== undefined && promptText !== null ? String(promptText) : '' };
-        if (existingLora !== null) {
-            obj.lora = existingLora;
-        }
-        node.inputs.positive = JSON.stringify(obj);
-    }
-}
-
 function resolveNodeTextField(node, preferredField = 'text') {
     if (!node || !node.inputs) return preferredField;
     const cType = String(node.class_type || '');
@@ -2907,24 +2864,9 @@ function buildComfyUiWorkflow(finalPrompt) {
                 const node = graph[mapping.positiveNodeId];
                 if (!node.inputs) node.inputs = {};
                 const field = resolveNodeTextField(node, mapping.positiveField || 'text');
-                const isWeiLin = /WeiLin/i.test(node.class_type || '') || /PromptUI/i.test(node.class_type || '');
-                if (isWeiLin) {
-                    let existingLora = null;
-                    const val = node.inputs[field];
-                    if (typeof val === 'string' && val.trim().startsWith('{')) {
-                        try {
-                            const parsed = JSON.parse(val.trim());
-                            if (parsed && typeof parsed === 'object' && !Array.isArray(parsed) && parsed.lora !== undefined) {
-                                existingLora = parsed.lora;
-                            }
-                        } catch (_) {}
-                    }
-                    const obj = { prompt: String(finalPrompt ?? '') };
-                    if (existingLora !== null) obj.lora = existingLora;
-                    node.inputs[field] = JSON.stringify(obj);
+                node.inputs[field] = finalPrompt;
+                if (/WeiLin/i.test(node.class_type || '') || /PromptUI/i.test(node.class_type || '')) {
                     if (node.inputs.auto_random !== undefined) node.inputs.auto_random = false;
-                } else {
-                    node.inputs[field] = finalPrompt;
                 }
             }
 
@@ -3056,13 +2998,12 @@ function buildComfyUiWorkflow(finalPrompt) {
         };
     }
 
-    // Format any dynamic %date:...% tokens and sanitize WeiLin nodes across all nodes
+    // Format any dynamic %date:...% tokens across all nodes to guarantee Windows filesystem compatibility
     if (payload && typeof payload === 'object') {
         Object.values(payload).forEach((node) => {
             if (node?.inputs && typeof node.inputs.filename_prefix === 'string') {
                 node.inputs.filename_prefix = formatComfyDateString(node.inputs.filename_prefix, now);
             }
-            sanitizeComfyWeiLinNode(node, finalPrompt);
         });
     }
 
