@@ -2783,6 +2783,40 @@ function getWorkflowMapping(workflow) {
     return workflow.mapping;
 }
 
+function formatComfyDateString(str, now = new Date()) {
+    if (!str || typeof str !== 'string') return str;
+    const pad = (n, len = 2) => String(n).padStart(len, '0');
+    const year = now.getFullYear();
+    const month = now.getMonth() + 1;
+    const date = now.getDate();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+
+    let res = str.replace(/%date:([^%]+)%/g, (_, fmt) => {
+        let result = fmt;
+        result = result.replace(/yyyy/g, String(year));
+        result = result.replace(/yy/g, String(year).slice(-2));
+        result = result.replace(/MM/g, pad(month));
+        result = result.replace(/M/g, String(month));
+        result = result.replace(/dd/g, pad(date));
+        result = result.replace(/d/g, String(date));
+        result = result.replace(/HH/g, pad(hours));
+        result = result.replace(/H/g, String(hours));
+        result = result.replace(/hh/g, pad(hours % 12 || 12));
+        result = result.replace(/h/g, String(hours % 12 || 12));
+        result = result.replace(/mm/g, pad(minutes));
+        result = result.replace(/m/g, String(minutes));
+        result = result.replace(/ss/g, pad(seconds));
+        result = result.replace(/s/g, String(seconds));
+        return result.replace(/:/g, '-');
+    });
+
+    res = res.replace(/%date%/gi, `${year}-${pad(month)}-${pad(date)}`);
+    res = res.replace(/%time%/gi, `${pad(hours)}-${pad(minutes)}-${pad(seconds)}`);
+    return res;
+}
+
 function buildComfyUiWorkflow(finalPrompt) {
     const settings = getSettings();
     const connection = getModeConnectionSettings('comfyui');
@@ -2791,13 +2825,12 @@ function buildComfyUiWorkflow(finalPrompt) {
     const resolvedSeed = Number.isFinite(seed) && seed >= 0
         ? Math.floor(seed)
         : Math.floor(Math.random() * Number.MAX_SAFE_INTEGER);
+    const now = new Date();
+    const pad = (n) => String(n).padStart(2, '0');
+    const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
     let payload;
 
     if (settings.comfyuiWorkflowJson) {
-        const now = new Date();
-        const pad = (n) => String(n).padStart(2, '0');
-        const dateStr = `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
-
         const currentWorkflow = settings.comfyuiWorkflows?.find((item) => item.id === settings.comfyuiSelectedWorkflow);
         let mapping = getWorkflowMapping(currentWorkflow);
         let graph = parseComfyWorkflowJson(settings.comfyuiWorkflowJson);
@@ -2963,6 +2996,15 @@ function buildComfyUiWorkflow(finalPrompt) {
                 class_type: 'SaveImage',
             },
         };
+    }
+
+    // Format any dynamic %date:...% tokens across all nodes to guarantee Windows filesystem compatibility
+    if (payload && typeof payload === 'object') {
+        Object.values(payload).forEach((node) => {
+            if (node?.inputs && typeof node.inputs.filename_prefix === 'string') {
+                node.inputs.filename_prefix = formatComfyDateString(node.inputs.filename_prefix, now);
+            }
+        });
     }
 
     return window.RBQ.emit('buildComfyUiWorkflow', payload);
