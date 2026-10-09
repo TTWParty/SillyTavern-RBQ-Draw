@@ -83,17 +83,12 @@
 ## 📝 更新日志
 
 ### 2026-10-09 (v0.3.112)
-- **🎯 NovelAI V5 算力档位与官方 API 协议 100% 严丝合缝深度对齐**：
-  - **底层模型精准路由**：选择 Medium 算力时自动路由至官方专属模型标识 `nai-diffusion-5-full-medium`（精准命中 `70AB5786` 蒸馏模型权重），选择 High 算力时路由至 `nai-diffusion-5-full`（命中 `0ADF9AB7` 完整大模型）。
+- **⚡ NovelAI V5 官方算力档位 (Effort) 深度适配与 API 协议对齐**：
+  - **算力档位自由切换**：支持 **Medium (蒸馏优化 / 14 步省点)** 与 **High (完整版 / 23 步)** 两档算力切换。选择 Medium 时前端自动锁定 14 步、Euler Ancestral 采样器并锁定 Rescale 为 0，省约 42% 算力点数消耗；切回 High 时平滑还原用户原先保存的步数与采样器设置。
+  - **底层模型精准路由**：选择 Medium 时自动将请求路由至官方专属模型标识 `nai-diffusion-5-full-medium`（精准命中 `70AB5786` 蒸馏模型权重），选择 High 时路由至 `nai-diffusion-5-full`（命中 `0ADF9AB7` 完整大模型）。
   - **严格净化 API 参数**：彻底剔除非官方的 `effort` 冗余字段，完全对齐官方请求 Schema。
-  - **锁定 V5 专属参数**：强制启用 `karras` 调度、`straight_alpha` 与 Brownian 运动去噪。
+  - **锁定 V5 专属参数**：针对 V5 强制启用 `karras` 调度、`straight_alpha` 与 Brownian 运动去噪。
   - **负面词智能自适应**：Medium 模式下自动兜底官方标准预设并智能衔接用户自定义负面词。
-
-### 2026-10-09 (v0.3.111)
-- **⚡ NovelAI V5 官方算力档位 (Effort) 适配**：
-  - 支持 **Medium (蒸馏优化)** 与 **High (完整版)** 两档 Effort 自由切换。
-  - **Medium 模式**：前端智能锁定 14 步与 Euler Ancestral 采样器，禁用负面提示词与 Guidance Rescale，节省约 42% 算力点数消耗。
-  - 在切回 High 模式时平滑还原用户原先保存的步数与采样器设置。
 
 ### 2026-09-21 (v0.3.80 - v0.3.91)
 - **🗃️ 全局配置预设与提示词插件无损持久化与秒切**：
