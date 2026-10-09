@@ -82,6 +82,12 @@
 
 ## 📝 更新日志
 
+### 2026-10-09 (v0.3.111)
+- **⚡ NovelAI V5 官方算力档位 (Effort) 适配**：
+  - 支持 **Medium (蒸馏优化)** 与 **High (完整版)** 两档 Effort 自由切换。
+  - **Medium 模式**：前端智能锁定 14 步与 Euler Ancestral 采样器，禁用负面提示词与 Guidance Rescale，节省约 42% 算力点数消耗。
+  - **请求安全隔离**：向 NAI V5 API 动态注入 `effort: 'medium' | 'high'` 参数，同时在切回 High 模式时平滑还原用户原先保存的步数与采样器设置。
+
 ### 2026-09-21 (v0.3.80 - v0.3.91)
 - **🗃️ 全局配置预设与提示词插件无损持久化与秒切**：
   - 彻底根除预设切换卡顿：重构 `switchGlobalProfile`，杜绝在 `change` 事件中重复销毁/重建 DOM options 导致的 macOS Aqua 渲染假死与深度序列化开销，实现毫秒级即时秒切。
