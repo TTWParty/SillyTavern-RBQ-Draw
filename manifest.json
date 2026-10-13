@@ -10,9 +10,9 @@
   "homePage": "https://github.com/TTWParty/SillyTavern-RBQ-Draw",
   "auto_update": false,
   "description": "从聊天中提取提示词，并调用 ComfyUI、NAI 或其他渠道进行生图。",
-  "changelog": "NAI 中转兼容性优化：自适应调整参数协议版本，Custom 模式自动省略 params_version 彻底根除第三方中转站雪花噪点图",
+  "changelog": "第三方中转兼容性优化",
   "changelogs": {
-    "0.3.118": "NAI 自适应传参协议与第三方中转兼容性优化：\n— 【自适应 params_version 协议】官方直连模式 (official) 与 rbq 模式严格保留 params_version: 3，100% 对齐官方规范；\n— 【彻底根除中转站雪花噪点】自定义中转模式 (custom) 自动省略 params_version，避开第三方 Python 反代对流式密文数据的封装 Bug，确保 NAI 4.5 与 V5 在任意第三方中转站下秒级稳定输出无损高清图",
+    "0.3.118": "第三方中转兼容性优化",
     "0.3.117": "紧急修复核心生图变量异常：\n— 【修复 base is not defined 致命报错】修复 v0.3.116 引入隔离模式时意外丢失 base 变量声明导致的生图校验阻断问题，全面恢复 NAI、ComfyUI、SD 及自定义接口的正常测试与出图调用",
     "0.3.116": "基准测试与工坊纯净生图隔离机制：\n— 【生图隔离协议 (Isolated Generation Mode)】底层 generateImage / buildNaiV4Payload / buildGeneratePayload 新增纯净隔离调度；\n— 【彻底根除提示词串扰】检测到工坊试炼、发布基准或 isolate/skipPresets 标志时，自动旁路切断酒馆本地设置中的前后缀 (prefix/suffix)、全局提示词与当前选中的本地画师预设；\n— 【特征注入拦截】隔离模式下全面阻断本地 Vibe 特征图与精准参考图的全局静默注入，确保工坊实测与预设发布 100% 纯净、所见即所得",
     "0.3.115": "NovelAI 权重语法自愈与解析穿透防御：\n— 【标签末尾数字自动隔离】全自动识别闭合前紧贴数字的 NAI 权重块（如 0.6::artist:dishwasher1910::、::bm94199::），自动注入防穿透空格（0.6::artist:dishwasher1910 ::），彻底杜绝尾部数字被 NAI 词法解析器误判为后文万倍权重导致的画质崩坏与过曝报错；\n— 【生态链路深度防护】覆盖正文提示词、负面提示词、多角色各分镜描述（char_captions / characterPrompts）及插件 Hook 返回链，免去用户手动添加逗号或空格的困扰",
