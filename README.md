@@ -255,6 +255,7 @@ v0.3.122 之前版本的问题，更新到最新版本即可。
 
 感谢以下朋友的支持（[完整名单与赞助方式](SPONSORS.md)）：
 
+<a href="SPONSORS.md"><img src="assets/sponsors/sora.jpg" width="48" height="48" alt="Sora" title="Sora"></a>
 <a href="SPONSORS.md"><img src="assets/sponsors/dantachaopingceng.jpg" width="48" height="48" alt="蛋挞超平层" title="蛋挞超平层"></a>
 
 ## 许可

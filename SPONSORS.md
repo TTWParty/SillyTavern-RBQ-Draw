@@ -15,6 +15,10 @@
 <table>
   <tr>
     <td align="center" width="120">
+      <img src="assets/sponsors/sora.jpg" width="80" height="80" alt="Sora"><br>
+      <sub><b>Sora</b></sub>
+    </td>
+    <td align="center" width="120">
       <img src="assets/sponsors/dantachaopingceng.jpg" width="80" height="80" alt="蛋挞超平层"><br>
       <sub><b>蛋挞超平层</b></sub>
     </td>
