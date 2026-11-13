@@ -2,7 +2,7 @@
 
 RBQ生图扩展是一个 [SillyTavern](https://github.com/SillyTavern/SillyTavern)（酒馆）扩展：它识别聊天消息里的生图标签，在消息中原位显示「生成图片」按钮和生成结果。支持 **NovelAI** 和 **ComfyUI**，也可以通过子插件接入其他生图后端，或让 AI 自动为剧情分镜出图。
 
-当前版本：**v0.3.126** · [更新日志](CHANGELOG.md) · [赞助者](SPONSORS.md) · [QQ 交流群：975575164](#交流与反馈)
+当前版本：**v0.3.127** · [更新日志](CHANGELOG.md) · [赞助者](SPONSORS.md) · [QQ 交流群：975575164](#交流与反馈)
 
 <p align="center">
   <img src="assets/screenshots/inline-card.png" width="640" alt="聊天消息中的生图卡片">

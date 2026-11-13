@@ -1,7 +1,15 @@
 # 更新日志
 
 > 本文件由 `scripts/gen-changelog.js` 根据 `manifest.json` 中的 `changelogs`（以及 `scripts/` 下的补充说明）自动生成，请不要手动修改。
-> 当前版本：**v0.3.126**
+> 当前版本：**v0.3.127**
+
+## v0.3.127
+
+- NovelAI 生图传输协议 1:1 对齐官网 V5 Multipart 新格式与服务端参考图缓存
+  - **官方直连对齐 Multipart 新格式**：官方 NAI 直连模式（及 *.novelai.net 镜像）全面对齐官网 class t5 / t3 协议，将生图请求封装为 multipart/form-data（主 JSON 写入 name="request" 的 application/json 分块，垫图/蒙版/Vibe/精准参考图拆分为 image、mask、ref_multiple_*、director_ref_* 独立 image/png 二进制分块并自动去重），省去约 33% Base64 传输膨胀
+  - **服务端参考图缓存与失效自动重传**：完整实现官网 applyCacheTransformation（HMAC-SHA256 cache_secret_key + *_cached 字段）：同一会话连续使用相同精准参考图或 Vibe 时免重复上传二进制原图；若服务端返回 400 INVALID_CACHE_KEYS 则自动按失效键精准补传二进制分块并透明重试，失败请求绝不污染缓存
+  - **全环境加密兼容**：内置标准 SHA-256 / HMAC-SHA256 纯 JS 降级引擎，手机局域网非 HTTPS（无 crypto.subtle）环境下参考图缓存与 .naiv4vibe 导出同样稳定运行
+  - **中转与自定义反代双向兼容**：RBQ 中转保持 JSON + 排队轮询协议；自定义接口默认使用 JSON 兼容第三方中转站，并新增「请求封装格式」切换（支持切换为官方 Multipart 新格式以适配纯透传反代）；同时移除参考图发包前无意义的 1.5s 人工等待
 
 ## v0.3.126
 
